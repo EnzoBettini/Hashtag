@@ -1,4 +1,4 @@
-https://www.hashtagtreinamentos.com/
+https://www.hashtagtreinamentos.com/home-antiga
 
 O objetivo para o Desafio 2 nesse módulo (Aprofundando no HTML) é utilizar as tags e componentes avançados que aprendemos ao longo do módulo na página que construímos até o momento.
 

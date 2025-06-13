@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button class="js-abrir">abrir</button>
+
+    <dialog>
+        <p>fkjbdekjbkdjbnksjdnbkdjsnbskjnbkljsbnlskbskljnns</p>
+        <button class="js-fechar">fechar</button>
+    </dialog>
+    <script>
+        let elementoAbrir = document.querySelector(".js-abrir");
+        let elementoFechar = document.querySelector(".js-fechar");
+        let elementoDialog = document.querySelector("dialog");
+
+        elementoAbrir.addEventListener("click", () => {
+            elementoDialog.showModal();
+        })
+
+        elementoFechar.addEventListener("click", () => {
+            elementoDialog.close();
+        })
+    </script>
+</body>
+</html>
