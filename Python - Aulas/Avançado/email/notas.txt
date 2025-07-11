@@ -1,0 +1,1 @@
+ Python e Sendgrid Twillio -> serviços para maior quantidade de emails
