@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="enviar">Clique aqui</button>
+    <button id="enviar2">Clique aqui</button>
+    <p id="preenchimento"></p>
+    <script>
+        botao = document.getElementById('enviar');
+        botao2 = document.getElementById('enviar2');
+        paragrafo = document.getElementById('preenchimento');
+
+        botao.addEventListener('click', () => {
+            alert('Olá Mundo');
+        });
+
+        botao2.addEventListener('click', () => {
+            nome = prompt('Digite seu nome');
+            paragrafo.innerHTML = `<b> ${nome} </b> `
+        });
+    </script>
+</body>
+</html>
