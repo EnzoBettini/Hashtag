@@ -1,0 +1,4 @@
+get -> pega info
+post -> cria info
+put (patch) -> atualiza
+delete -> deleta

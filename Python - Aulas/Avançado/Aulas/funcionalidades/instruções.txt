@@ -1,0 +1,5 @@
+heroku login
+cd -> Python - Aulas\Avançado\Aulas\funcionalidades
+git init
+
+heroku git:remote -a Hashtag
