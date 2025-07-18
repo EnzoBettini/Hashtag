@@ -15,12 +15,17 @@ def faturamento():
 @app.route("/vendas")
 def vendas_produtos():
     df_vendas_produtos = df[['Produto', 'Valor Final']].groupby('Produto').sum()
-    retorno_json = df_vendas_produtos.to_dict()
+    retorno_json = df_vendas_produtos
     return retorno_json
 
-@app.route("/produto")
-def produto_especifico():
-    return {}
+@app.route("/<produto>")
+def produto_especifico(produto):
+    try:
+        df_vendas_produtos = df[['Produto', 'Valor Final']].groupby('Produto').sum()
+        retorno_produto_json = df_vendas_produtos.loc[[produto]].to_json()
+        return retorno_produto_json
+    except KeyError:
+        return {"erro": f"Produto '{produto}' nao encontrado"}, 404
 
 
 if __name__ == "__main__":
