@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <p>
+        {% for usuario in lista_usuarios %}
+            {{ usuario }}
+        {% endfor %}
+    </p>
+{% endblock %}
