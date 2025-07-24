@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="container d-flex mt-7">
+    <!-- Login -->
+    <div class="col-5">
+        <div class="card">
+            <div class="card-form-colors card-body">
+                <div class="card-body">
+                    <h4 class="mb-3">Login</h4>
+                    <form class="d-grid gap-3" method="POST">
+                        {{ FormLogin.hidden_tag() }}
+                        <div>
+                            {{ FormLogin.email.label(class="form-labels") }}
+                            {{ FormLogin.email(class="form-control", placeholder="Digite o seu login") }}
+                            {% for erro in FormLogin.email.errors %}
+                                <small class="text-danger">{{ erro }}</small>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ FormLogin.senha.label(class="form-labels") }}
+                            {{ FormLogin.senha(class="form-control", placeholder="Digite a sua senha") }}
+                            {% for erro in FormLogin.senha.errors %}
+                                <small class="text-danger">{{ erro }}</small>
+                            {% endfor %}
+                        </div>
+                        {{ FormLogin.botao_submit_login(class="btn btn-forms mt-3") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-2">
+    </div>
+    <!-- Criar Conta -->
+    <div class="col-5 card">
+        <div class="card-form-colors card-body">
+            <div class="card-body">
+                <h4 class="mb-3">Criar Conta</h4>
+
+                <form class="d-grid gap-3" method="POST">
+                    {{ FormCriarConta.hidden_tag() }}
+
+                    <div class="row">
+                        <div class="col-6">
+                            {{ FormCriarConta.username.label(class="form-labels") }}
+                            {{ FormCriarConta.username(class="form-control", placeholder="Digite o seu login") }}
+                            {% for erro in FormCriarConta.username.errors %}
+                                <small class="text-danger">{{ erro }}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="col-6">
+                            {{ FormCriarConta.email.label(class="form-labels") }}
+                            {{ FormCriarConta.email(class="form-control", placeholder="Digite o seu email") }}
+                            {% for erro in FormCriarConta.email.errors %}
+                                <small class="text-danger">{{ erro }}</small>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row d-flex">
+                        <div class="col-6">
+                            {{ FormCriarConta.senha.label(class="form-labels") }}
+                            {{ FormCriarConta.senha(class="form-control", placeholder="Digite a sua senha") }}
+                            {% for erro in FormCriarConta.senha.errors %}
+                                <small class="text-danger">{{ erro }}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="col-6">
+                            {{ FormCriarConta.confirmacao_senha.label(class="form-labels") }}
+                            {{ FormCriarConta.confirmacao_senha(class="form-control", placeholder="Digite a sua senha novamente") }}
+                            {% for erro in FormCriarConta.confirmacao_senha.errors %}
+                                <small class="text-danger">{{ erro }}</small>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+                    {{ FormCriarConta.botao_submit_criar_conta(class="btn btn-forms mt-3") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
