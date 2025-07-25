@@ -26,6 +26,15 @@
         {% include 'components/navbar.html' %}
     </header>
     <main>
+        {% with mensagens = get_flashed_messages(with_categories=True) %}
+          {% if mensagens %}
+            {% for categoria, mensagem in mensagens%}
+              <div class="container alert {{ categoria }}">
+                  {{ mensagem }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
         {% block main %}
         {% endblock %}
     </main>

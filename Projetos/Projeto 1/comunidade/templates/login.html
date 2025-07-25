@@ -8,23 +8,36 @@
             <div class="card-form-colors card-body">
                 <div class="card-body">
                     <h4 class="mb-3">Login</h4>
-                    <form class="d-grid gap-3" method="POST">
+                    <form class="d-grid gap-3" method="POST" action="">
                         {{ FormLogin.hidden_tag() }}
+                        {{ FormLogin.csrf_token }}
                         <div>
                             {{ FormLogin.email.label(class="form-labels") }}
+                            {% if FormLogin.email.errors %}
+                                {% for erro in FormLogin.email.errors %}
+                                    <small class="text-danger">{{ erro }}</small>
+                                {% endfor %}
+                            {% endif %}
                             {{ FormLogin.email(class="form-control", placeholder="Digite o seu login") }}
-                            {% for erro in FormLogin.email.errors %}
                                 <small class="text-danger">{{ erro }}</small>
-                            {% endfor %}
                         </div>
                         <div>
                             {{ FormLogin.senha.label(class="form-labels") }}
+                            {% if FormLogin.senha.errors %}
+                                {% for erro in FormLogin.email.errors %}
+                                    <small class="text-danger">{{ erro }}</small>
+                                {% endfor %}
+                            {% endif %}
                             {{ FormLogin.senha(class="form-control", placeholder="Digite a sua senha") }}
                             {% for erro in FormLogin.senha.errors %}
                                 <small class="text-danger">{{ erro }}</small>
                             {% endfor %}
                         </div>
-                        {{ FormLogin.botao_submit_login(class="btn btn-forms mt-3") }}
+                        <div>
+                            <input type="checkbox" id="manter-logado" name="manter-logado" value="manter-logado">
+                            <label for="manter-logado"> Continuar conectado? </label><br>
+                        </div>
+                        {{ FormLogin.botao_submit_login(class="btn btn-forms mt-1") }}
                     </form>
                 </div>
             </div>
@@ -38,9 +51,9 @@
             <div class="card-body">
                 <h4 class="mb-3">Criar Conta</h4>
 
-                <form class="d-grid gap-3" method="POST">
+                <form class="d-grid gap-3" method="POST" action="">
                     {{ FormCriarConta.hidden_tag() }}
-
+                    {{ FormCriarConta.csrf_token }}
                     <div class="row">
                         <div class="col-6">
                             {{ FormCriarConta.username.label(class="form-labels") }}
@@ -74,13 +87,16 @@
                             {% endfor %}
                         </div>
                     </div>
-
-
-                    {{ FormCriarConta.botao_submit_criar_conta(class="btn btn-forms mt-3") }}
+                    <div>
+                        <input type="checkbox" id="aceitar-termos" name="aceitar-termos" value="aceitar-termos">
+                        <label for="aceitar-termos"> Aceito os termos de uso <a href="#">aqui</a> </label><br>
+                    </div>
+                    {{ FormCriarConta.botao_submit_criar_conta(class="btn btn-forms mt-1 disabled") }}
                 </form>
             </div>
         </div>
     </div>
 </div>
+<script src="{{ url_for('static', filename='Js/login.min.js') }}"></script>
 
 {% endblock %}
