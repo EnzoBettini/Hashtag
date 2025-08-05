@@ -2,6 +2,7 @@ from flask import render_template, url_for, request, flash, redirect
 from comunidade import app, database, bcrypt
 from comunidade.forms import FormCriarConta, FormLogin
 from comunidade.models import Usuario
+from flask_login import login_user
 
 @app.route("/")
 def home():
@@ -26,8 +27,15 @@ def login():
     if request.method == 'POST':
         # Detecta o botão de login
         if 'botao_submit_login' in request.form and form_login.validate():
-            flash(f'Login feito com sucesso no email: {form_login.email.data}', 'alert-success')
-            return redirect(url_for('home'))  # ou sua rota principal
+            usuario = Usuario.query.filter_by(email=form_login.email.data).first()
+            if usuario and bcrypt.check_password_hash(usuario.senha, form_login.senha.data.encode('utf-8')):
+                manter_logado = request.form.get("manter-logado") == "manter-logado"
+                login_user(usuario,remember=manter_logado)
+                flash(f'Login feito com sucesso no email: {form_login.email.data}', 'alert-success')
+                return redirect(url_for('home'))  # ou sua rota principal
+
+            else:
+                flash(f'Falha no login, usuario ou senha incorretos', 'alert-danger')
 
         # Detecta o botão de criar conta
         elif 'botao_submit_criar_conta' in request.form and form_criar.validate():
