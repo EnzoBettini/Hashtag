@@ -39,7 +39,7 @@ def login():
 
         # Detecta o botão de criar conta
         elif 'botao_submit_criar_conta' in request.form and form_criar.validate():
-            usuario = Usuario(username=form_criar.username.data, email=form_criar.email.data, senha=bcrypt.generate_password_hash(form_criar.senha.data))
+            usuario = Usuario(username=form_criar.username.data, email=form_criar.email.data, senha=bcrypt.generate_password_hash(form_criar.senha.data).decode('utf-8'))
             database.session.add(usuario)
             database.session.commit()
             flash(f'Conta criada com sucesso no email: {form_criar.email.data}', 'alert-success')
