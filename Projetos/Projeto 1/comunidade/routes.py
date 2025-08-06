@@ -2,7 +2,7 @@ from flask import render_template, url_for, request, flash, redirect
 from comunidade import app, database, bcrypt
 from comunidade.forms import FormCriarConta, FormLogin
 from comunidade.models import Usuario
-from flask_login import login_user
+from flask_login import login_user, logout_user, current_user
 
 @app.route("/")
 def home():
@@ -46,3 +46,17 @@ def login():
             return redirect(url_for('home'))
 
     return render_template('login.html', FormCriarConta=form_criar, FormLogin=form_login)
+
+@app.route("/logout")
+def sair():
+    logout_user()
+    flash('Logout feito com sucesso!', 'alert-success')
+    return redirect(url_for('home'))
+
+@app.route("/perfil")
+def perfil():
+    return render_template('perfil.html')
+
+@app.route("/post/criar")
+def criar_post():
+    return render_template('criarpost.html')
