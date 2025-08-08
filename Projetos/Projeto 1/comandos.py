@@ -17,6 +17,7 @@ with app.app_context():
     usuario = Usuario.query.filter_by(email='enzobettini@hotmail.com').first()
     # # post_visu = database.session.query(Post).filter_by(id_usuario=1).first()
     # print(usuario.senha)
+    print(usuario.username)
     # print(usuario_livro.username)
     # print(usuario_livro.email)
     # print(usuario_livro.senha)

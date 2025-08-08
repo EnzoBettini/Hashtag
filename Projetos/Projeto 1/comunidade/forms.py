@@ -14,3 +14,10 @@ class FormLogin(FlaskForm):
     email = StringField('Nome de Usuário', validators=[DataRequired(), Email()])
     senha = PasswordField('Senha', validators=[DataRequired(), Length(6, 20)])
     botao_submit_login = SubmitField('Fazer Login')
+
+class FormEditarPerfil(FlaskForm):
+    username = StringField('Nome de Usuário', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    senha = PasswordField('Senha', validators=[DataRequired(), Length(6, 20)])
+    confirmacao_senha = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('senha')])
+    botao_submit_trocar_dados = SubmitField('Alterar Dados')

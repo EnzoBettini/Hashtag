@@ -1,0 +1,51 @@
+{% extends 'perfil.html' %}
+
+{% block form_editar_perfil %}
+<div class="card-profile container mt-5 justify-content-center p-0 border-edit-profile">
+    <div class="card remove-container-padding border-edit-profile">
+        <div class="card-form-colors card-body border-edit-profile">
+            <div class="card-body border-edit-profile">
+                    <h4 class="mb-3">Editar Perfil</h4>
+
+                    <form class="d-grid gap-3" method="POST" action="">
+                        {{ FormEditarPerfil.hidden_tag() }}
+                        {{ FormEditarPerfil.csrf_token }}
+                        <div>
+                            {{ FormEditarPerfil.username.label(class="form-labels") }}
+                            {{ FormEditarPerfil.username(class="form-control", placeholder="Digite o seu login") }}
+                            {% for erro in FormEditarPerfil.username.errors %}
+                                <small class="text-danger">{{ erro }}</small>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ FormEditarPerfil.email.label(class="form-labels") }}
+                            {{ FormEditarPerfil.email(class="form-control", placeholder="Digite o seu email") }}
+                            {% for erro in FormEditarPerfil.email.errors %}
+                                <small class="text-danger">{{ erro }}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="row d-flex">
+                            <div class="col-6">
+                                {{ FormEditarPerfil.senha.label(class="form-labels") }}
+                                {{ FormEditarPerfil.senha(class="form-control", placeholder="Digite a sua senha") }}
+                                {% for erro in FormEditarPerfil.senha.errors %}
+                                    <small class="text-danger">{{ erro }}</small>
+                                {% endfor %}
+                            </div>
+                            <div class="col-6">
+                                {{ FormEditarPerfil.confirmacao_senha.label(class="form-labels") }}
+                                {{ FormEditarPerfil.confirmacao_senha(class="form-control", placeholder="Digite a sua senha novamente") }}
+                                {% for erro in FormEditarPerfil.confirmacao_senha.errors %}
+                                    <small class="text-danger">{{ erro }}</small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {{ FormEditarPerfil.botao_submit_trocar_dados(class="btn btn-forms mt-1") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='Js/editar_perfil.min.js') }}"></script>
+{% endblock %}
