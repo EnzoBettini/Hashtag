@@ -1,29 +1,82 @@
 {% extends 'perfil.html' %}
 
 {% block form_editar_perfil %}
-<div class="card-profile container mt-5 justify-content-center p-0 border-edit-profile">
+<div class="card-profile container mt-5 justify-content-center p-0 border-edit-profile is-visible">
     <div class="card remove-container-padding border-edit-profile">
         <div class="card-form-colors card-body border-edit-profile">
-            <div class="card-body border-edit-profile">
-                    <h4 class="mb-3">Editar Perfil</h4>
+            <h4 class="mb-3">Editar Perfil</h4>
 
-                    <form class="d-grid gap-3" method="POST" action="">
-                        {{ FormEditarPerfil.hidden_tag() }}
-                        {{ FormEditarPerfil.csrf_token }}
-                        <div>
-                            {{ FormEditarPerfil.username.label(class="form-labels") }}
-                            {{ FormEditarPerfil.username(class="form-control", placeholder="Digite o seu login") }}
-                            {% for erro in FormEditarPerfil.username.errors %}
-                                <small class="text-danger">{{ erro }}</small>
-                            {% endfor %}
+            <form class="d-grid gap-3" method="POST" enctype="multipart/form-data">
+                {{ FormEditarPerfil.hidden_tag() }}
+                {{ FormEditarPerfil.csrf_token }}
+
+                <div>
+                    {{ FormEditarPerfil.username.label(class="form-labels") }}
+                    {{ FormEditarPerfil.username(class="form-control", placeholder="Digite o seu login") }}
+                    {% for erro in FormEditarPerfil.username.errors %}
+                        <small class="text-danger">{{ erro }}</small>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    {{ FormEditarPerfil.email.label(class="form-labels") }}
+                    {{ FormEditarPerfil.email(class="form-control", placeholder="Digite o seu email") }}
+                    {% for erro in FormEditarPerfil.email.errors %}
+                        <small class="text-danger">{{ erro }}</small>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    {{ FormEditarPerfil.foto_perfil.label(class="form-labels") }}
+                    {{ FormEditarPerfil.foto_perfil(class="form-control", placeholder="Alterar foto de perfil") }}
+                    {% if FormEditarPerfil.foto_perfil.errors %}
+                        {% for erro in FormEditarPerfil.foto_perfil.errors %}
+                            <small class="text-danger">{{ erro }}</small>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <label class="form-labels">Cursos</label>
+                        <div class="form-control d-flex gap-4">
+
+                            <div class="d-flex align-items-center">
+                                <img src="{{ url_for('static', filename='images/cursos/excel.png') }}" alt="imagem curso excel" height="20" class="me-2">
+                                <div>
+                                    {{ FormEditarPerfil.curso_excel.label(class="form-labels me-1") }}
+                                    {{ FormEditarPerfil.curso_excel(class="form-check-input") }}
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center">
+                                <img src="{{ url_for('static', filename='images/cursos/python.png') }}" alt="imagem curso python" height="20" class="me-2">
+                                <div>
+                                    {{ FormEditarPerfil.curso_python.label(class="form-labels me-1") }}
+                                    {{ FormEditarPerfil.curso_python(class="form-check-input") }}
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center">
+                                <img src="{{ url_for('static', filename='images/cursos/vba.jpg') }}" alt="imagem curso vba" height="20" class="me-2">
+                                <div>
+                                    {{ FormEditarPerfil.curso_vba.label(class="form-labels me-1") }}
+                                    {{ FormEditarPerfil.curso_vba(class="form-check-input") }}
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center">
+                                <img src="{{ url_for('static', filename='images/cursos/pptx.png') }}" alt="imagem curso apresentação" height="20" class="me-2">
+                                <div>
+                                    {{ FormEditarPerfil.curso_apresentacao.label(class="form-labels me-1") }}
+                                    {{ FormEditarPerfil.curso_apresentacao(class="form-check-input") }}
+                                </div>
+                            </div>
+
                         </div>
-                        <div>
-                            {{ FormEditarPerfil.email.label(class="form-labels") }}
-                            {{ FormEditarPerfil.email(class="form-control", placeholder="Digite o seu email") }}
-                            {% for erro in FormEditarPerfil.email.errors %}
-                                <small class="text-danger">{{ erro }}</small>
-                            {% endfor %}
-                        </div>
+                    </div>
+
+                    <div class="col-12 mt-3">
                         <div class="row d-flex">
                             <div class="col-6">
                                 {{ FormEditarPerfil.senha.label(class="form-labels") }}
@@ -40,12 +93,13 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        {{ FormEditarPerfil.botao_submit_trocar_dados(class="btn btn-forms mt-1") }}
-                    </form>
+                    </div>
                 </div>
-            </div>
+                {{ FormEditarPerfil.botao_submit_trocar_dados(class="btn btn-forms mt-1") }}
+            </form>
         </div>
     </div>
 </div>
+
 <script src="{{ url_for('static', filename='Js/editar_perfil.min.js') }}"></script>
 {% endblock %}

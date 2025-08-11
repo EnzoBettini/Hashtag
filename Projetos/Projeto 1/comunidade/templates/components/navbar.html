@@ -33,14 +33,14 @@
                     <a class="nav-link fw-medium {% if request.path == '/post/criar' %}active{% endif %}" href="{{url_for('criar_post')}}">Criar Post</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-medium {% if request.path == '/contato' %}active{% endif %}" href="{{url_for('sair')}}">Sair</a>
+                    <a class="nav-link fw-medium {% if request.path == '/sair' %}active{% endif %}" href="{{url_for('sair')}}">Sair</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
                     <a class="nav-link fw-medium {% if request.path == '/login' %}active{% endif %}" href="{{url_for('login')}}">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-medium {% if request.path == '/login' %}active{% endif %}" href="{{url_for('login')}}">Criar Conta</a>
+                    <a class="nav-link fw-medium {% if request.path == '/login/criarconta' %}active{% endif %}" href="{{url_for('criar_conta')}}">Criar Conta</a>
                 </li>
                 {% endif %}
             </ul>

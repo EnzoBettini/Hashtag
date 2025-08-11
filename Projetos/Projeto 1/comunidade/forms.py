@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from flask_wtf.file import FileField, FileAllowed
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 
@@ -21,3 +22,8 @@ class FormEditarPerfil(FlaskForm):
     senha = PasswordField('Senha', validators=[DataRequired(), Length(6, 20)])
     confirmacao_senha = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('senha')])
     botao_submit_trocar_dados = SubmitField('Alterar Dados')
+    foto_perfil = FileField('Atualizar Foto de perfil', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    curso_excel = BooleanField('Excel')
+    curso_vba = BooleanField('VBA')
+    curso_python = BooleanField('Python')
+    curso_apresentacao = BooleanField('Apresentação')
