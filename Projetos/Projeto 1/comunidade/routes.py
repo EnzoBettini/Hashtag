@@ -22,7 +22,8 @@ def contato():
 @app.route("/usuarios")
 @login_required
 def usuarios():
-    return render_template('usuarios.html')
+    lista_usuarios = Usuario.query.all()
+    return render_template('usuarios.html', lista_usuarios=lista_usuarios)
 
 
 

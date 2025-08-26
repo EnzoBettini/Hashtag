@@ -78,6 +78,56 @@
         color 0.4s ease-in-out;
 }
 
+.btn-discard-forms {
+    background-color: #eeeeee;
+    border-color: #2E2E2E;
+    color: #2E2E2E;
+    font-weight: 600;
+    transition: background-color 0.3s cubic-bezier(0.49, -0.6, 0.52, 1.11),
+        transform 0.3s cubic-bezier(0.49, -0.6, 0.52, 1.11),
+        color 0.4s ease-in-out;
+}
+
+.Excel-course {
+    background-color: #298138;
+        border: 3px solid #1e9232;
+        color: #f3f3f3;
+        font-weight: 600;
+        transition: background-color 0.3s cubic-bezier(0.49, -0.6, 0.52, 1.11),
+            transform 0.3s cubic-bezier(0.49, -0.6, 0.52, 1.11),
+            color 0.4s ease-in-out;
+}
+
+.VBA-course {
+    background-color: #eeeeee;
+        border: 3px solid #2E2E2E;
+        color: #2E2E2E;
+        font-weight: 600;
+        transition: background-color 0.3s cubic-bezier(0.49, -0.6, 0.52, 1.11),
+            transform 0.3s cubic-bezier(0.49, -0.6, 0.52, 1.11),
+            color 0.4s ease-in-out;
+}
+
+.Apresentação-course {
+    background-color: #D24726;
+        border: 3px solid #B7472A;
+        color: #fff;
+        font-weight: 600;
+        transition: background-color 0.3s cubic-bezier(0.49, -0.6, 0.52, 1.11),
+            transform 0.3s cubic-bezier(0.49, -0.6, 0.52, 1.11),
+            color 0.4s ease-in-out;
+}
+
+.Python-course {
+    background-color: #3776AB;
+        border: 3px solid #FFD43B;
+        color: #fff;
+        font-weight: 600;
+        transition: background-color 0.3s cubic-bezier(0.49, -0.6, 0.52, 1.11),
+            transform 0.3s cubic-bezier(0.49, -0.6, 0.52, 1.11),
+            color 0.4s ease-in-out;
+}
+
 .border-edit-profile {
     border: none;
     border-radius: 10px;

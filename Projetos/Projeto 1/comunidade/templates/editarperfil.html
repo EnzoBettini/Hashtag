@@ -95,7 +95,16 @@
                         </div>
                     </div>
                 </div>
-                {{ FormEditarPerfil.botao_submit_trocar_dados(class="btn btn-forms mt-1") }}
+                <div class="col-12 mt-3">
+                    <div class="row d-flex">
+                        <div class="col-6">
+                            {{ FormEditarPerfil.botao_submit_trocar_dados(class="col-12 btn btn-forms") }}
+                        </div>
+                        <div class="col-6">
+                            <a class="col-12 btn btn-discard-forms" href="{{url_for('perfil')}}">Cancelar</a>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

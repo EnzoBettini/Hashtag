@@ -4,7 +4,7 @@ from comunidade.models import Usuario
 
 with app.app_context():
     # database.drop_all()
-    # database.create_all()
+    database.create_all()
 
 
     # usuario = Usuario(username='Enzo', email='enzoteste@gmail.com', senha='123456')
@@ -14,10 +14,10 @@ with app.app_context():
     # database.session.add(meu_post)
     # database.session.commit()
     # usuario_livro = database.session.query(Usuario).filter_by(username='Enzo Teste 2').first()
-    usuario = Usuario.query.filter_by(email='testedasilva@hotmail.com').first()
+    # usuario = Usuario.query.filter_by(email='testedasilva@hotmail.com').first()
     # # post_visu = database.session.query(Post).filter_by(id_usuario=1).first()
     # print(usuario.senha)
-    print(usuario.cursos)
+    # print(usuario.cursos)
     # print(usuario_livro.username)
     # print(usuario_livro.email)
     # print(usuario_livro.senha)
