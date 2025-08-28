@@ -1,6 +1,108 @@
 {% extends 'base.html' %}
 {% block main %}
   <div class="container">
-    <h1>OLÁ MUNDO</h1>
+    <h1>Comunidade</h1>
+    <h3>Primeiro projeto com Python</h3>
+    <hr>
+    {% for post in posts %}
+
+    {% if current_user.is_authenticated and current_user.email == post.autor.email %}
+  <!-- Modal do post (ID único) -->
+      <div class="modal-container-enzo" id="modal-editar-{{ post.id }}">
+        <div class="modal-enzo">
+          <div class="card-form-colors card-body border-edit-profile">
+            <h4 class="mb-3">Editar Post</h4>
+
+            <form class="d-grid gap-3" method="POST" action="{{ url_for('home') }}">
+              {{ FormEditar.hidden_tag() }}
+
+              <!-- identifica qual post está sendo editado -->
+              <input type="hidden" name="post_id" value="{{ post.id }}">
+
+              <div>
+                {{ FormEditar.titulo.label(class="form-labels mb-1", for='titulo-' ~ post.id) }}
+                {{ FormEditar.titulo(
+                    id='titulo-' ~ post.id,
+                    class="form-control",
+                    placeholder="Digite o titulo do post",
+                    value=post.titulo
+                ) }}
+                {% for erro in FormEditar.titulo.errors %}
+                  <small class="text-danger">{{ erro }}</small>
+                {% endfor %}
+              </div>
+
+              <div>
+                {{ FormEditar.corpo.label(class="form-labels mb-1", for='corpo-' ~ post.id) }}
+                {{ FormEditar.corpo(
+                    id='corpo-' ~ post.id,
+                    class="form-control",
+                    placeholder="Digite o texto do post",
+                    value=post.corpo
+                ) }}
+                {% for erro in FormEditar.corpo.errors %}
+                  <small class="text-danger">{{ erro }}</small>
+                {% endfor %}
+              </div>
+
+              <div class="col-12 mt-3">
+                <div class="row d-flex">
+                  <div class="col-6">
+                    {{ FormEditar.botao_submit_criar_post(class="col-12 btn btn-forms") }}
+                  </div>
+                  <div class="col-6">
+                    <button type="button" class="col-12 btn btn-discard-forms close-modal">Cancelar</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+
+    <div class="container mt-5 d-flex justify-content-center">
+      <div class="card-profile p-3">
+        <div class="container d-flex flex-column gap-3">
+
+          <div class="row">
+            <div class="col-12 mb-1 d-flex flex-row align-items-center">
+              <img src="{{ url_for('static', filename='profile_pictures/' ~ post.autor.foto_perfil) }}"
+                   class="rounded me-2" width="36">
+              <a class="autor-post" href="{{ url_for('usuarios') }}">{{ post.autor.username }}</a>
+
+              {% if current_user.is_authenticated and current_user.email == post.autor.email %}
+                <!-- Ícone abre o modal deste post -->
+                <a class="fa-solid fa-bars ms-auto icone-editar-post"
+                   data-modal-target="modal-editar-{{ post.id }}"></a>
+              {% endif %}
+            </div>
+
+            <div class="col-12">
+              <span class="titulo-post">{{ post.titulo }}</span>
+            </div>
+
+            <hr class="col-12">
+
+            <div class="col-12">
+              {{ post.corpo }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 mb-0 text-end">
+              <p class="data-post">{{ post.data_criacao.strftime("%d/%m/%Y %H:%M") }}</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
+
+  <!-- seu JS -->
+  <script src="{{ url_for('static', filename='Js/editar_post.js') }}"></script>
 {% endblock %}

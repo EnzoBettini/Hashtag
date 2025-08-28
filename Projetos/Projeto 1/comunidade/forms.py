@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 
@@ -27,3 +27,12 @@ class FormEditarPerfil(FlaskForm):
     curso_vba = BooleanField('VBA')
     curso_python = BooleanField('Python')
     curso_apresentacao = BooleanField('Apresentação')
+
+class FormCriarPost(FlaskForm):
+    titulo = StringField('Titulo do post', validators=[DataRequired(), Length(2, 50)])
+    corpo = TextAreaField('Corpo do post', validators=[DataRequired(), Length(1, 800)])
+    botao_submit_criar_post = SubmitField('Criar post')
+class FormEditarPost(FlaskForm):
+    titulo = StringField('Titulo do post', validators=[DataRequired(), Length(2, 50)])
+    corpo = TextAreaField('Corpo do post', validators=[DataRequired(), Length(1, 800)])
+    botao_submit_criar_post = SubmitField('Criar post')

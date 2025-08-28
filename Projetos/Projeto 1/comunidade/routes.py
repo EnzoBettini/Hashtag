@@ -1,15 +1,46 @@
-from flask import render_template, url_for, request, flash, redirect
+from flask import render_template, url_for, request, flash, redirect, abort
 from comunidade import app, database, bcrypt
-from comunidade.forms import FormCriarConta, FormLogin, FormEditarPerfil
-from comunidade.models import Usuario
+from comunidade.forms import FormCriarConta, FormLogin, FormEditarPerfil, FormCriarPost, FormEditarPost
+from comunidade.models import Usuario, Post
 from flask_login import login_user, logout_user, current_user, login_required
 from PIL import Image
 import secrets
 import os
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def home():
-    return render_template('home.html')
+    posts = Post.query.order_by(Post.id.desc()).all()
+    FormEditar = FormEditarPost()  # usado só p/ CSRF no template
+
+    if request.method == "POST":
+        post_id = request.form.get("post_id", type=int)
+        titulo  = (request.form.get("titulo") or "").strip()
+        corpo   = (request.form.get("corpo") or "").strip()
+
+        if not post_id:
+            flash("Requisição inválida.", "alert-danger")
+            return redirect(url_for("home"))
+
+        post = Post.query.get_or_404(post_id)
+
+        # só o autor pode editar
+        if not current_user.is_authenticated or post.autor != current_user:
+            abort(403)
+
+        if not titulo or not corpo:
+            flash("Preencha título e corpo.", "alert-danger")
+            return redirect(url_for("home"))
+
+        # atualizar
+        post.titulo = titulo
+        post.corpo  = corpo
+        database.session.commit()
+
+        flash("Post atualizado com sucesso.", "alert-success")
+        return redirect(url_for("home"))
+
+    # GET
+    return render_template("home.html", posts=posts, FormEditar=FormEditar)
 
 
 
@@ -82,10 +113,17 @@ def perfil():
     return render_template('perfil.html', foto_perfil=foto_perfil)
 
 
-@app.route("/post/criar")
+@app.route("/post/criar",  methods=['GET', 'POST'])
 @login_required
 def criar_post():
-    return render_template('criarpost.html')
+    FormCriar = FormCriarPost()
+    if FormCriar.validate_on_submit():
+        post = Post(titulo=FormCriar.titulo.data, corpo=FormCriar.corpo.data, autor=current_user)
+        database.session.add(post)
+        database.session.commit()
+        flash('Post criado com sucesso', 'alert-success')
+        return redirect(url_for('home'))
+    return render_template('criarpost.html', FormCriar=FormCriar)
 
 
 

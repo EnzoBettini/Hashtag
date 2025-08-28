@@ -12,7 +12,7 @@
 
                 <div>
                     {{ FormEditarPerfil.username.label(class="form-labels") }}
-                    {{ FormEditarPerfil.username(class="form-control", placeholder="Digite o seu login") }}
+                    {{ FormEditarPerfil.username(class="form-control", placeholder="Digite o seu nome") }}
                     {% for erro in FormEditarPerfil.username.errors %}
                         <small class="text-danger">{{ erro }}</small>
                     {% endfor %}

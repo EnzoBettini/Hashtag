@@ -1,5 +1,43 @@
 {% extends 'base.html' %}
 
 {% block main %}
-criarpost
+<div class="card-profile container mt-5 justify-content-center p-0 border-edit-profile is-visible">
+    <div class="card remove-container-padding border-edit-profile">
+        <div class="card-form-colors card-body border-edit-profile">
+            <h4 class="mb-3">Criar Post</h4>
+
+            <form class="d-grid gap-3" method="POST" enctype="multipart/form-data">
+                {{ FormCriar.hidden_tag() }}
+                {{ FormCriar.csrf_token }}
+
+                <div>
+                    {{ FormCriar.titulo.label(class="form-labels mb-1") }}
+                    {{ FormCriar.titulo(class="form-control", placeholder="Digite o titulo do post") }}
+                    {% for erro in FormCriar.titulo.errors %}
+                        <small class="text-danger">{{ erro }}</small>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    {{ FormCriar.corpo.label(class="form-labels mb-1") }}
+                    {{ FormCriar.corpo(class="form-control", placeholder="Digite o texto do post") }}
+                    {% for erro in FormCriar.corpo.errors %}
+                        <small class="text-danger">{{ erro }}</small>
+                    {% endfor %}
+                </div>
+
+                <div class="col-12 mt-3">
+                    <div class="row d-flex">
+                        <div class="col-6">
+                            {{ FormCriar.botao_submit_criar_post(class="col-12 btn btn-forms") }}
+                        </div>
+                        <div class="col-6">
+                            <a class="col-12 btn btn-discard-forms" href="{{url_for('perfil')}}">Cancelar</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
