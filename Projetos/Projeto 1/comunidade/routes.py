@@ -7,40 +7,40 @@ from PIL import Image
 import secrets
 import os
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=['GET', 'POST'])
 def home():
     posts = Post.query.order_by(Post.id.desc()).all()
-    FormEditar = FormEditarPost()  # usado só p/ CSRF no template
+    FormEditar = FormEditarPost()  # usado para CSRF e labels
 
-    if request.method == "POST":
-        post_id = request.form.get("post_id", type=int)
-        titulo  = (request.form.get("titulo") or "").strip()
-        corpo   = (request.form.get("corpo") or "").strip()
+    if request.method == 'POST':
+        post_id = request.form.get('post_id', type=int)
+        titulo  = (request.form.get('titulo') or '').strip()
+        corpo   = (request.form.get('corpo') or '').strip()
 
         if not post_id:
-            flash("Requisição inválida.", "alert-danger")
-            return redirect(url_for("home"))
+            flash('Requisição inválida.', 'alert-danger')
+            return redirect(url_for('home'))
 
         post = Post.query.get_or_404(post_id)
 
-        # só o autor pode editar
+        # somente o autor pode editar
         if not current_user.is_authenticated or post.autor != current_user:
             abort(403)
 
         if not titulo or not corpo:
-            flash("Preencha título e corpo.", "alert-danger")
-            return redirect(url_for("home"))
+            flash('Preencha título e corpo.', 'alert-danger')
+            return redirect(url_for('home'))
 
-        # atualizar
         post.titulo = titulo
         post.corpo  = corpo
         database.session.commit()
 
-        flash("Post atualizado com sucesso.", "alert-success")
-        return redirect(url_for("home"))
+        flash('Post atualizado com sucesso.', 'alert-success')
+        return redirect(url_for('home'))
 
     # GET
-    return render_template("home.html", posts=posts, FormEditar=FormEditar)
+    return render_template('home.html', posts=posts, FormEditar=FormEditar)
+
 
 
 
