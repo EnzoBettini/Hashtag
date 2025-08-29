@@ -1,43 +1,768 @@
 {% extends 'base.html' %}
 
+{% block title %}Criar Post - Cooper Card{% endblock %}
+
+{% block head %}
+<style>
+  /* Container Principal */
+  .create-post-container {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+
+  /* Card Principal */
+  .create-post-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%);
+    backdrop-filter: blur(20px);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(168, 213, 227, 0.3);
+    width: min(95vw, 800px);
+    overflow: hidden;
+    position: relative;
+    animation: slideInUp 0.6s ease;
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .create-post-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+  }
+
+  /* Header do Card */
+  .create-post-header {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .create-post-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: headerFloat 8s ease-in-out infinite;
+  }
+
+  @keyframes headerFloat {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(180deg); }
+  }
+
+  .create-post-title {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .create-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(247, 108, 94, 0.3);
+  }
+
+  .create-subtitle {
+    margin-top: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Body do Card */
+  .create-post-body {
+    padding: 2.5rem;
+  }
+
+  /* Formulário */
+  .create-form {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .form-section {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    border: 1px solid rgba(168, 213, 227, 0.2);
+    transition: var(--transition);
+    position: relative;
+  }
+
+  .form-section:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 15px rgba(247, 108, 94, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .form-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px 0 0 2px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .form-section:hover::before {
+    opacity: 1;
+  }
+
+  /* Campos do Formulário */
+  .form-group {
+    margin-bottom: 0;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .label-icon {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.7rem;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--border-radius-sm);
+    background: rgba(255, 255, 255, 0.9);
+    transition: var(--transition);
+    font-size: 1rem;
+    font-family: var(--font-primary);
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(247, 108, 94, 0.1);
+    outline: none;
+    background: white;
+    transform: scale(1.01);
+  }
+
+  .form-control:hover {
+    border-color: var(--primary-light);
+    background: white;
+  }
+
+  .form-control::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* Textarea específico */
+  .form-control[rows] {
+    min-height: 150px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  /* Contador de caracteres */
+  .char-counter {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    transition: var(--transition);
+  }
+
+  .char-counter.warning {
+    color: var(--warning-color);
+    font-weight: 600;
+  }
+
+  .char-counter.danger {
+    color: var(--danger-color);
+    font-weight: 600;
+  }
+
+  /* Preview do Post */
+  .post-preview {
+    background: linear-gradient(135deg, rgba(168, 213, 227, 0.1) 0%, rgba(179, 229, 252, 0.1) 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    border: 2px dashed var(--secondary-color);
+    margin-top: 1rem;
+    transition: var(--transition);
+  }
+
+  .preview-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .preview-content {
+    background: white;
+    border-radius: var(--border-radius-sm);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(168, 213, 227, 0.3);
+  }
+
+  .preview-post-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    min-height: 1.5rem;
+  }
+
+  .preview-post-body {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    min-height: 3rem;
+  }
+
+  .preview-empty {
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  /* Mensagens de erro */
+  .error-message {
+    color: var(--danger-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: shake 0.5s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .error-message i {
+    font-size: 0.8rem;
+  }
+
+  /* Botões de Ação */
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .btn-form-action {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition-bounce);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-form-action::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-form-action:hover::before {
+    left: 100%;
+  }
+
+  .btn-create {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--text-primary);
+    box-shadow: 0 4px 15px rgba(247, 108, 94, 0.3);
+  }
+
+  .btn-create:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(247, 108, 94, 0.4);
+    text-decoration: none;
+  }
+
+  .btn-create:disabled {
+    background: var(--gray-300);
+    color: var(--gray-500);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-cancel {
+    background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
+    color: var(--text-secondary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-cancel:hover {
+    background: linear-gradient(135deg, var(--gray-300), var(--gray-400));
+    color: var(--text-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+  }
+
+  /* Dicas e ajuda */
+  .help-section {
+    background: linear-gradient(135deg, rgba(179, 229, 252, 0.1) 0%, rgba(168, 213, 227, 0.1) 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 1rem;
+    border: 1px solid rgba(179, 229, 252, 0.3);
+  }
+
+  .help-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .help-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .help-item {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .help-item i {
+    color: var(--primary-color);
+    width: 12px;
+  }
+
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .create-post-container {
+      padding: 1rem;
+    }
+
+    .create-post-body {
+      padding: 1.5rem;
+    }
+
+    .create-post-header {
+      padding: 2rem 1.5rem;
+    }
+
+    .create-post-title {
+      font-size: 1.5rem;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .form-section {
+      padding: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .create-post-card {
+      margin: 0.5rem;
+      width: calc(100vw - 1rem);
+    }
+
+    .create-post-title {
+      font-size: 1.25rem;
+    }
+
+    .create-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block main %}
-<div class="card-profile container mt-5 justify-content-center p-0 border-edit-profile is-visible">
-    <div class="card remove-container-padding border-edit-profile">
-        <div class="card-form-colors card-body border-edit-profile">
-            <h4 class="mb-3">Criar Post</h4>
+<div class="create-post-container">
+  <div class="create-post-card">
 
-            <form class="d-grid gap-3" method="POST" enctype="multipart/form-data">
-                {{ FormCriar.hidden_tag() }}
-                {{ FormCriar.csrf_token }}
-
-                <div>
-                    {{ FormCriar.titulo.label(class="form-labels mb-1") }}
-                    {{ FormCriar.titulo(class="form-control", placeholder="Digite o titulo do post") }}
-                    {% for erro in FormCriar.titulo.errors %}
-                        <small class="text-danger">{{ erro }}</small>
-                    {% endfor %}
-                </div>
-
-                <div>
-                    {{ FormCriar.corpo.label(class="form-labels mb-1") }}
-                    {{ FormCriar.corpo(class="form-control", placeholder="Digite o texto do post") }}
-                    {% for erro in FormCriar.corpo.errors %}
-                        <small class="text-danger">{{ erro }}</small>
-                    {% endfor %}
-                </div>
-
-                <div class="col-12 mt-3">
-                    <div class="row d-flex">
-                        <div class="col-6">
-                            {{ FormCriar.botao_submit_criar_post(class="col-12 btn btn-forms") }}
-                        </div>
-                        <div class="col-6">
-                            <a class="col-12 btn btn-discard-forms" href="{{url_for('perfil')}}">Cancelar</a>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    <!-- Header -->
+    <div class="create-post-header">
+      <h1 class="create-post-title">
+        <div class="create-icon">
+          <i class="fas fa-pen-fancy"></i>
         </div>
+        Criar Novo Post
+      </h1>
+      <p class="create-subtitle">
+        Compartilhe suas ideias e conhecimentos com a comunidade
+      </p>
     </div>
+
+    <!-- Body -->
+    <div class="create-post-body">
+      <form class="create-form" method="POST" enctype="multipart/form-data" id="createPostForm">
+        {{ FormCriar.hidden_tag() }}
+        {{ FormCriar.csrf_token }}
+
+        <!-- Seção: Título -->
+        <div class="form-section">
+          <div class="form-group">
+            <label class="form-label" for="titulo">
+              <div class="label-icon">
+                <i class="fas fa-heading"></i>
+              </div>
+              {{ FormCriar.titulo.label.text }}
+            </label>
+            {{ FormCriar.titulo(
+                class="form-control",
+                placeholder="Digite um título atrativo para seu post...",
+                id="titulo",
+                maxlength="100"
+            ) }}
+            <div class="char-counter" id="titleCounter">0/100 caracteres</div>
+            {% for erro in FormCriar.titulo.errors %}
+              <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ erro }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Seção: Conteúdo -->
+        <div class="form-section">
+          <div class="form-group">
+            <label class="form-label" for="corpo">
+              <div class="label-icon">
+                <i class="fas fa-align-left"></i>
+              </div>
+              {{ FormCriar.corpo.label.text }}
+            </label>
+            {{ FormCriar.corpo(
+                class="form-control",
+                placeholder="Escreva o conteúdo do seu post aqui...\n\nDicas:\n• Use quebras de linha para organizar melhor o texto\n• Seja claro e objetivo\n• Compartilhe experiências e conhecimentos",
+                id="corpo",
+                rows="8",
+                maxlength="2000"
+            ) }}
+            <div class="char-counter" id="bodyCounter">0/2000 caracteres</div>
+            {% for erro in FormCriar.corpo.errors %}
+              <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ erro }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Preview do Post -->
+        <div class="post-preview">
+          <div class="preview-title">
+            <i class="fas fa-eye"></i>
+            Preview do Post
+          </div>
+          <div class="preview-content" id="postPreview">
+            <div class="preview-post-title" id="previewTitle">Título do post aparecerá aqui...</div>
+            <div class="preview-post-body" id="previewBody">Conteúdo do post aparecerá aqui...</div>
+          </div>
+        </div>
+
+        <!-- Dicas -->
+        <div class="help-section">
+          <div class="help-title">
+            <i class="fas fa-lightbulb"></i>
+            Dicas para um bom post
+          </div>
+          <ul class="help-list">
+            <li class="help-item">
+              <i class="fas fa-check"></i>
+              Use um título claro e descritivo
+            </li>
+            <li class="help-item">
+              <i class="fas fa-check"></i>
+              Organize o conteúdo em parágrafos
+            </li>
+            <li class="help-item">
+              <i class="fas fa-check"></i>
+              Compartilhe experiências pessoais
+            </li>
+            <li class="help-item">
+              <i class="fas fa-check"></i>
+              Seja respeitoso com outros usuários
+            </li>
+          </ul>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="form-actions">
+          {{ FormCriar.botao_submit_criar_post(
+              class="btn-form-action btn-create",
+              id="submitBtn"
+          ) }}
+          <a href="{{ url_for('home') }}" class="btn-form-action btn-cancel">
+            <i class="fas fa-times"></i>
+            Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+
+<!-- JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tituloInput = document.getElementById('titulo');
+  const corpoInput = document.getElementById('corpo');
+  const titleCounter = document.getElementById('titleCounter');
+  const bodyCounter = document.getElementById('bodyCounter');
+  const previewTitle = document.getElementById('previewTitle');
+  const previewBody = document.getElementById('previewBody');
+  const submitBtn = document.getElementById('submitBtn');
+
+  // Função para atualizar contadores
+  function updateCounter(input, counter, maxLength) {
+    const currentLength = input.value.length;
+    counter.textContent = `${currentLength}/${maxLength} caracteres`;
+
+    // Mudar cor baseado na proximidade do limite
+    counter.classList.remove('warning', 'danger');
+    if (currentLength > maxLength * 0.9) {
+      counter.classList.add('danger');
+    } else if (currentLength > maxLength * 0.7) {
+      counter.classList.add('warning');
+    }
+  }
+
+  // Função para atualizar preview
+  function updatePreview() {
+    const titulo = tituloInput.value.trim();
+    const corpo = corpoInput.value.trim();
+
+    previewTitle.textContent = titulo || 'Título do post aparecerá aqui...';
+    previewBody.textContent = corpo || 'Conteúdo do post aparecerá aqui...';
+
+    // Atualizar estado do botão
+    const isValid = titulo.length > 0 && corpo.length > 0;
+    submitBtn.disabled = !isValid;
+  }
+
+  // Event listeners para título
+  if (tituloInput) {
+    tituloInput.addEventListener('input', function() {
+      updateCounter(this, titleCounter, 100);
+      updatePreview();
+    });
+
+    // Inicializar contador
+    updateCounter(tituloInput, titleCounter, 100);
+  }
+
+  // Event listeners para corpo
+  if (corpoInput) {
+    corpoInput.addEventListener('input', function() {
+      updateCounter(this, bodyCounter, 2000);
+      updatePreview();
+
+      // Auto-resize textarea
+      this.style.height = 'auto';
+      this.style.height = Math.max(150, this.scrollHeight) + 'px';
+    });
+
+    // Inicializar contador
+    updateCounter(corpoInput, bodyCounter, 2000);
+  }
+
+  // Inicializar preview
+  updatePreview();
+
+  // Validação do formulário
+  const form = document.getElementById('createPostForm');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      const titulo = tituloInput.value.trim();
+      const corpo = corpoInput.value.trim();
+
+      if (!titulo || !corpo) {
+        e.preventDefault();
+        alert('Por favor, preencha o título e o conteúdo do post.');
+        return false;
+      }
+
+      if (titulo.length > 100 || corpo.length > 2000) {
+        e.preventDefault();
+        alert('O título ou conteúdo excedem o limite de caracteres.');
+        return false;
+      }
+
+      // Mostrar loading no botão
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
+      submitBtn.disabled = true;
+    });
+  }
+
+  // Atalhos de teclado
+  document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + Enter para submeter
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      if (!submitBtn.disabled) {
+        form.submit();
+      }
+    }
+
+    // Escape para cancelar
+    if (e.key === 'Escape') {
+      if (confirm('Tem certeza que deseja cancelar? O conteúdo será perdido.')) {
+        window.location.href = '{{ url_for("home") }}';
+      }
+    }
+  });
+
+  // Salvar rascunho no localStorage
+  function saveDraft() {
+    const draft = {
+      titulo: tituloInput.value,
+      corpo: corpoInput.value,
+      timestamp: Date.now()
+    };
+    localStorage.setItem('cooper_card_draft', JSON.stringify(draft));
+  }
+
+  // Carregar rascunho
+  function loadDraft() {
+    const draftStr = localStorage.getItem('cooper_card_draft');
+    if (draftStr) {
+      try {
+        const draft = JSON.parse(draftStr);
+        // Carregar apenas se for recente (menos de 1 hora)
+        if (Date.now() - draft.timestamp < 3600000) {
+          if (draft.titulo && !tituloInput.value) {
+            tituloInput.value = draft.titulo;
+          }
+          if (draft.corpo && !corpoInput.value) {
+            corpoInput.value = draft.corpo;
+          }
+          updatePreview();
+          updateCounter(tituloInput, titleCounter, 100);
+          updateCounter(corpoInput, bodyCounter, 2000);
+        }
+      } catch (e) {
+        console.log('Erro ao carregar rascunho:', e);
+      }
+    }
+  }
+
+  // Carregar rascunho ao inicializar
+  loadDraft();
+
+  // Salvar rascunho periodicamente
+  setInterval(saveDraft, 30000); // A cada 30 segundos
+
+  // Salvar rascunho ao digitar
+  tituloInput.addEventListener('input', saveDraft);
+  corpoInput.addEventListener('input', saveDraft);
+
+  // Limpar rascunho ao submeter com sucesso
+  form.addEventListener('submit', function() {
+    setTimeout(() => {
+      localStorage.removeItem('cooper_card_draft');
+    }, 1000);
+  });
+
+  // Aviso ao sair da página
+  window.addEventListener('beforeunload', function(e) {
+    if (tituloInput.value.trim() || corpoInput.value.trim()) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+});
+</script>
 {% endblock %}

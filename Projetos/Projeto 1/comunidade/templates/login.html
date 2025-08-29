@@ -1,102 +1,637 @@
 {% extends 'base.html' %}
 
+{% block title %}Login - Comunidade{% endblock %}
+
+{% block head %}
+<style>
+  /* Container Principal */
+  .auth-container {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+
+  /* Cards de Autenticação */
+  .auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(168, 213, 227, 0.3);
+    overflow: hidden;
+    transition: var(--transition);
+    position: relative;
+  }
+
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  }
+
+  .auth-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Header dos Cards */
+  .auth-header {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .auth-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 2px;
+  }
+
+  .auth-title {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .auth-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  /* Body dos Cards */
+  .auth-body {
+    padding: 2.5rem;
+  }
+
+  /* Formulários */
+  .auth-form {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .form-group {
+    position: relative;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: block;
+    font-size: 0.95rem;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--border-radius-sm);
+    background: rgba(255, 255, 255, 0.8);
+    transition: var(--transition);
+    font-size: 1rem;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(247, 108, 94, 0.1);
+    outline: none;
+    background: white;
+  }
+
+  .form-control:hover {
+    border-color: var(--primary-light);
+    background: white;
+  }
+
+  .form-control::placeholder {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  /* Campos com ícones */
+  .input-with-icon {
+    position: relative;
+  }
+
+  .input-with-icon .form-control {
+    padding-left: 3rem;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    transition: var(--transition);
+  }
+
+  .form-control:focus + .input-icon {
+    color: var(--primary-color);
+  }
+
+  /* Checkbox customizado */
+  .custom-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+
+  .custom-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+  }
+
+  .custom-checkbox label {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .custom-checkbox a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .custom-checkbox a:hover {
+    text-decoration: underline;
+  }
+
+  /* Botões */
+  .btn-auth {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition-bounce);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-auth::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-auth:hover::before {
+    left: 100%;
+  }
+
+  .btn-login {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--text-primary);
+    box-shadow: 0 4px 15px rgba(247, 108, 94, 0.3);
+  }
+
+  .btn-login:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(247, 108, 94, 0.4);
+  }
+
+  .btn-register {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+    color: var(--text-primary);
+    box-shadow: 0 4px 15px rgba(168, 213, 227, 0.3);
+  }
+
+  .btn-register:hover {
+    background: linear-gradient(135deg, var(--secondary-light), var(--secondary-color));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(168, 213, 227, 0.4);
+  }
+
+  .btn-register:disabled {
+    background: var(--gray-300);
+    color: var(--gray-500);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Mensagens de erro */
+  .error-message {
+    color: var(--danger-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .error-message i {
+    font-size: 0.8rem;
+  }
+
+  /* Separador */
+  .auth-separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+    position: relative;
+  }
+
+  .separator-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gray-300), transparent);
+  }
+
+  .separator-text {
+    padding: 0 1rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Responsividade */
+  @media (max-width: 992px) {
+    .auth-container {
+      padding: 1rem;
+    }
+
+    .auth-body {
+      padding: 2rem 1.5rem;
+    }
+
+    .auth-header {
+      padding: 1.5rem;
+    }
+
+    .auth-title {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .auth-body {
+      padding: 1.5rem 1rem;
+    }
+
+    .auth-header {
+      padding: 1.25rem;
+    }
+
+    .auth-title {
+      font-size: 1.25rem;
+    }
+  }
+
+  /* Animações */
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .slide-in-left {
+    animation: slideInLeft 0.6s ease-out;
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+</style>
+{% endblock %}
+
 {% block main %}
-<div class="container d-flex mt-7">
-    <!-- Login -->
-    <div class="col-5">
-        <div class="card">
-            <div class="card-form-colors card-body">
-                <div class="card-body">
-                    <h4 class="mb-3">Login</h4>
-                    <form class="d-grid gap-3" method="POST" action="">
-                        {{ FormLogin.hidden_tag() }}
-                        {{ FormLogin.csrf_token }}
-                        <div>
-                            {{ FormLogin.email.label(class="form-labels") }}
-                            {% if FormLogin.email.errors %}
-                                {% for erro in FormLogin.email.errors %}
-                                    <small class="text-danger">{{ erro }}</small>
-                                {% endfor %}
-                            {% endif %}
-                            {{ FormLogin.email(class="form-control", placeholder="Digite o seu login") }}
-                                <small class="text-danger">{{ erro }}</small>
-                        </div>
-                        <div>
-                            {{ FormLogin.senha.label(class="form-labels") }}
-                            {% if FormLogin.senha.errors %}
-                                {% for erro in FormLogin.email.errors %}
-                                    <small class="text-danger">{{ erro }}</small>
-                                {% endfor %}
-                            {% endif %}
-                            {{ FormLogin.senha(class="form-control", placeholder="Digite a sua senha") }}
-                            {% for erro in FormLogin.senha.errors %}
-                                <small class="text-danger">{{ erro }}</small>
-                            {% endfor %}
-                        </div>
-                        <div>
-                            <input type="checkbox" id="manter-logado" name="manter-logado" value="manter-logado">
-                            <label for="manter-logado"> Continuar conectado? </label><br>
-                        </div>
-                        {{ FormLogin.botao_submit_login(class="btn btn-forms mt-1") }}
-                    </form>
+<div class="auth-container">
+  <div class="container">
+    <div class="row justify-content-center align-items-start g-4">
+
+      <!-- Card de Login -->
+      <div class="col-lg-5 col-md-6">
+        <div class="auth-card slide-in-left" data-aos="fade-right">
+          <div class="auth-header">
+            <h4 class="auth-title">
+              <div class="auth-icon">
+                <i class="fas fa-sign-in-alt"></i>
+              </div>
+              Entrar na Conta
+            </h4>
+          </div>
+
+          <div class="auth-body">
+            <form class="auth-form" method="POST" action="">
+              {{ FormLogin.hidden_tag() }}
+              {{ FormLogin.csrf_token }}
+
+              <!-- Email -->
+              <div class="form-group">
+                {{ FormLogin.email.label(class="form-label") }}
+                <div class="input-with-icon">
+                  {{ FormLogin.email(class="form-control", placeholder="Digite seu email") }}
+                  <i class="fas fa-envelope input-icon"></i>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-2">
-    </div>
-    <!-- Criar Conta -->
-    <div class="col-5 card">
-        <div class="card-form-colors card-body">
-            <div class="card-body">
-                <h4 class="mb-3">Criar Conta</h4>
+                {% if FormLogin.email.errors %}
+                  {% for erro in FormLogin.email.errors %}
+                    <div class="error-message">
+                      <i class="fas fa-exclamation-circle"></i>
+                      {{ erro }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
 
-                <form class="d-grid gap-3" method="POST" action="">
-                    {{ FormCriarConta.hidden_tag() }}
-                    {{ FormCriarConta.csrf_token }}
-                    <div class="row">
-                        <div class="col-6">
-                            {{ FormCriarConta.username.label(class="form-labels") }}
-                            {{ FormCriarConta.username(class="form-control", placeholder="Digite o seu login") }}
-                            {% for erro in FormCriarConta.username.errors %}
-                                <small class="text-danger">{{ erro }}</small>
-                            {% endfor %}
-                        </div>
-                        <div class="col-6">
-                            {{ FormCriarConta.email.label(class="form-labels") }}
-                            {{ FormCriarConta.email(class="form-control", placeholder="Digite o seu email") }}
-                            {% for erro in FormCriarConta.email.errors %}
-                                <small class="text-danger">{{ erro }}</small>
-                            {% endfor %}
-                        </div>
+              <!-- Senha -->
+              <div class="form-group">
+                {{ FormLogin.senha.label(class="form-label") }}
+                <div class="input-with-icon">
+                  {{ FormLogin.senha(class="form-control", placeholder="Digite sua senha") }}
+                  <i class="fas fa-lock input-icon"></i>
+                </div>
+                {% if FormLogin.senha.errors %}
+                  {% for erro in FormLogin.senha.errors %}
+                    <div class="error-message">
+                      <i class="fas fa-exclamation-circle"></i>
+                      {{ erro }}
                     </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
 
-                    <div class="row d-flex">
-                        <div class="col-6">
-                            {{ FormCriarConta.senha.label(class="form-labels") }}
-                            {{ FormCriarConta.senha(class="form-control", placeholder="Digite a sua senha") }}
-                            {% for erro in FormCriarConta.senha.errors %}
-                                <small class="text-danger">{{ erro }}</small>
-                            {% endfor %}
-                        </div>
-                        <div class="col-6">
-                            {{ FormCriarConta.confirmacao_senha.label(class="form-labels") }}
-                            {{ FormCriarConta.confirmacao_senha(class="form-control", placeholder="Digite a sua senha novamente") }}
-                            {% for erro in FormCriarConta.confirmacao_senha.errors %}
-                                <small class="text-danger">{{ erro }}</small>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="aceitar-termos" name="aceitar-termos" value="aceitar-termos">
-                        <label for="aceitar-termos"> Aceito os termos de uso <a href="#">aqui</a> </label><br>
-                    </div>
-                    {{ FormCriarConta.botao_submit_criar_conta(class="btn btn-forms mt-1 disabled") }}
-                </form>
+              <!-- Manter conectado -->
+              <div class="custom-checkbox">
+                <input type="checkbox" id="manter-logado" name="manter-logado" value="manter-logado">
+                <label for="manter-logado">Continuar conectado</label>
+              </div>
+
+              <!-- Botão de Login -->
+              {{ FormLogin.botao_submit_login(class="btn-auth btn-login") }}
+            </form>
+
+            <!-- Link para recuperar senha -->
+            <div class="text-center mt-3">
+              <a href="#" class="text-muted" style="font-size: 0.9rem;">
+                <i class="fas fa-key me-1"></i>Esqueceu sua senha?
+              </a>
             </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Separador Visual -->
+      <div class="col-lg-2 d-none d-lg-block">
+        <div class="auth-separator">
+          <div class="separator-line"></div>
+          <div class="separator-text">OU</div>
+          <div class="separator-line"></div>
+        </div>
+      </div>
+
+      <!-- Card de Criar Conta -->
+      <div class="col-lg-5 col-md-6">
+        <div class="auth-card slide-in-right" data-aos="fade-left">
+          <div class="auth-header">
+            <h4 class="auth-title">
+              <div class="auth-icon">
+                <i class="fas fa-user-plus"></i>
+              </div>
+              Criar Nova Conta
+            </h4>
+          </div>
+
+          <div class="auth-body">
+            <form class="auth-form" method="POST" action="">
+              {{ FormCriarConta.hidden_tag() }}
+              {{ FormCriarConta.csrf_token }}
+
+              <!-- Username e Email -->
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ FormCriarConta.username.label(class="form-label") }}
+                    <div class="input-with-icon">
+                      {{ FormCriarConta.username(class="form-control", placeholder="Nome de usuário") }}
+                      <i class="fas fa-user input-icon"></i>
+                    </div>
+                    {% for erro in FormCriarConta.username.errors %}
+                      <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ erro }}
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ FormCriarConta.email.label(class="form-label") }}
+                    <div class="input-with-icon">
+                      {{ FormCriarConta.email(class="form-control", placeholder="Seu email") }}
+                      <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                    {% for erro in FormCriarConta.email.errors %}
+                      <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ erro }}
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Senhas -->
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ FormCriarConta.senha.label(class="form-label") }}
+                    <div class="input-with-icon">
+                      {{ FormCriarConta.senha(class="form-control", placeholder="Criar senha") }}
+                      <i class="fas fa-lock input-icon"></i>
+                    </div>
+                    {% for erro in FormCriarConta.senha.errors %}
+                      <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ erro }}
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    {{ FormCriarConta.confirmacao_senha.label(class="form-label") }}
+                    <div class="input-with-icon">
+                      {{ FormCriarConta.confirmacao_senha(class="form-control", placeholder="Confirmar senha") }}
+                      <i class="fas fa-lock input-icon"></i>
+                    </div>
+                    {% for erro in FormCriarConta.confirmacao_senha.errors %}
+                      <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ erro }}
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Aceitar termos -->
+              <div class="custom-checkbox">
+                <input type="checkbox" id="aceitar-termos" name="aceitar-termos" value="aceitar-termos" required>
+                <label for="aceitar-termos">
+                  Aceito os <a href="#" >termos de uso</a> e
+                  <a href="#" >política de privacidade</a>
+                </label>
+              </div>
+
+              <!-- Botão de Criar Conta -->
+              {{ FormCriarConta.botao_submit_criar_conta(class="btn-auth btn-register", id="btn-criar-conta", disabled=true) }}
+            </form>
+          </div>
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>
+
+<!-- JavaScript -->
 <script src="{{ url_for('static', filename='Js/login.min.js') }}"></script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Controle do botão de criar conta baseado no checkbox
+  const checkboxTermos = document.getElementById('aceitar-termos');
+  const btnCriarConta = document.getElementById('btn-criar-conta');
+
+  if (checkboxTermos && btnCriarConta) {
+    checkboxTermos.addEventListener('change', function() {
+      btnCriarConta.disabled = !this.checked;
+
+      if (this.checked) {
+        btnCriarConta.classList.remove('disabled');
+      } else {
+        btnCriarConta.classList.add('disabled');
+      }
+    });
+  }
+
+  // Validação em tempo real
+  const inputs = document.querySelectorAll('.form-control');
+  inputs.forEach(input => {
+    input.addEventListener('input', function() {
+      if (this.value.trim() !== '') {
+        this.classList.add('has-value');
+      } else {
+        this.classList.remove('has-value');
+      }
+    });
+
+    // Verificar se já tem valor no carregamento
+    if (input.value.trim() !== '') {
+      input.classList.add('has-value');
+    }
+  });
+
+  // Animação dos ícones
+  const inputsWithIcon = document.querySelectorAll('.input-with-icon .form-control');
+  inputsWithIcon.forEach(input => {
+    input.addEventListener('focus', function() {
+      const icon = this.nextElementSibling;
+      if (icon) {
+        icon.style.transform = 'translateY(-50%) scale(1.1)';
+      }
+    });
+
+    input.addEventListener('blur', function() {
+      const icon = this.nextElementSibling;
+      if (icon) {
+        icon.style.transform = 'translateY(-50%) scale(1)';
+      }
+    });
+  });
+
+  // Feedback visual para senhas
+  const senhaInput = document.querySelector('input[name="senha"]');
+  const confirmSenhaInput = document.querySelector('input[name="confirmacao_senha"]');
+
+  if (confirmSenhaInput && senhaInput) {
+    confirmSenhaInput.addEventListener('input', function() {
+      if (this.value !== '' && senhaInput.value !== '') {
+        if (this.value === senhaInput.value) {
+          this.style.borderColor = 'var(--success-color)';
+        } else {
+          this.style.borderColor = 'var(--danger-color)';
+        }
+      } else {
+        this.style.borderColor = '';
+      }
+    });
+  }
+});
+</script>
 {% endblock %}

@@ -1,45 +1,635 @@
 {% extends 'base.html' %}
 
+{% block title %}Perfil - {{ current_user.username }} - Comunidade{% endblock %}
+
+{% block head %}
+<style>
+  /* Container Principal */
+  .profile-container {
+    min-height: calc(100vh - 160px);
+    padding: 2rem 0;
+  }
+
+  /* Card Principal do Perfil */
+  .profile-main-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
+    backdrop-filter: blur(20px);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(168, 213, 227, 0.3);
+    overflow: hidden;
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .profile-main-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+  }
+
+  /* Header do Perfil */
+  .profile-header {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: profileFloat 8s ease-in-out infinite;
+  }
+
+  @keyframes profileFloat {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(180deg); }
+  }
+
+  .profile-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Avatar do Usuário */
+  .profile-avatar-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+    transition: var(--transition);
+    position: relative;
+  }
+
+  .profile-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .avatar-status {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    background: var(--success-color);
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Informações do Usuário */
+  .profile-info {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .profile-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .profile-username {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    opacity: 0.8;
+  }
+
+  /* Estatísticas */
+  .profile-stats {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    box-shadow: 0 8px 25px rgba(247, 108, 94, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-stats::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: statsShine 3s ease-in-out infinite;
+  }
+
+  @keyframes statsShine {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .stat-item {
+    text-align: center;
+    color: white;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.25rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  /* Botões de Ação */
+  .profile-actions {
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+  }
+
+  .btn-profile-action {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition-bounce);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-profile-action::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-profile-action:hover::before {
+    left: 100%;
+  }
+
+  .btn-edit-profile {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+    color: var(--text-primary);
+    box-shadow: 0 4px 15px rgba(168, 213, 227, 0.3);
+    margin-bottom: 1rem;
+  }
+
+  .btn-edit-profile:hover {
+    background: linear-gradient(135deg, var(--secondary-light), var(--accent-color));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(168, 213, 227, 0.4);
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .btn-settings {
+    background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
+    color: var(--text-secondary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-settings:hover {
+    background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  /* Seção de Cursos */
+  .courses-section {
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+  }
+
+  .courses-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .courses-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .course-tag {
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: default;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .course-tag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  .course-tag:hover::before {
+    left: 100%;
+  }
+
+  /* Cores dos cursos */
+  .Python-course {
+    background: linear-gradient(135deg, #3776ab, #4584b6);
+    color: white;
+    box-shadow: 0 4px 15px rgba(55, 118, 171, 0.3);
+  }
+
+  .JavaScript-course {
+    background: linear-gradient(135deg, #f7df1e, #f0d91e);
+    color: #2d2d2d;
+    box-shadow: 0 4px 15px rgba(247, 223, 30, 0.3);
+  }
+
+  .React-course {
+    background: linear-gradient(135deg, #61dafb, #21d4fd);
+    color: #2d2d2d;
+    box-shadow: 0 4px 15px rgba(97, 218, 251, 0.3);
+  }
+
+  .HTML-course {
+    background: linear-gradient(135deg, #e34f26, #f06529);
+    color: white;
+    box-shadow: 0 4px 15px rgba(227, 79, 38, 0.3);
+  }
+
+  .CSS-course {
+    background: linear-gradient(135deg, #1572b6, #33a9dc);
+    color: white;
+    box-shadow: 0 4px 15px rgba(21, 114, 182, 0.3);
+  }
+
+  .Java-course {
+    background: linear-gradient(135deg, #ed8b00, #f89500);
+    color: white;
+    box-shadow: 0 4px 15px rgba(237, 139, 0, 0.3);
+  }
+
+  .course-tag:hover {
+    transform: translateY(-2px) scale(1.05);
+  }
+
+  /* Estado vazio */
+  .empty-courses {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+  }
+
+  .empty-courses i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .profile-container {
+      padding: 1rem;
+    }
+
+    .profile-header {
+      padding: 1.5rem;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+    }
+
+    .profile-name {
+      font-size: 1.5rem;
+    }
+
+    .stat-number {
+      font-size: 1.5rem;
+    }
+
+    .profile-actions,
+    .courses-section {
+      padding: 1.5rem;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+    }
+
+    .profile-name {
+      font-size: 1.25rem;
+    }
+
+    .courses-grid {
+      gap: 0.5rem;
+    }
+
+    .course-tag {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
+    }
+  }
+
+  /* Animações */
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+{% endblock %}
+
 {% block main %}
-<div class="container mt-5 d-flex justify-content-center">
-    <div class="card-profile p-3">
-        <div class="d-flex align-items-center gap-3">
-            <div class="image">
-                <img src="{{ foto_perfil }}" class="rounded" width="155">
+<div class="profile-container">
+  <div class="container">
+    <div class="profile-main-card fade-in-up" data-aos="fade-up">
+
+      <!-- Header do Perfil -->
+      <div class="profile-header">
+        <div class="profile-content">
+          <!-- Avatar -->
+          <div class="profile-avatar-container">
+            <img src="{{ foto_perfil }}"
+                 alt="Avatar de {{ current_user.username }}"
+                 class="profile-avatar">
+            <div class="avatar-status" title="Online"></div>
+          </div>
+
+          <!-- Informações do Usuário -->
+          <div class="profile-info">
+            <h1 class="profile-name">{{ current_user.username or 'Usuário' }}</h1>
+            <p class="profile-username">@{{ current_user.username|lower or 'usuario' }}</p>
+          </div>
+
+          <!-- Estatísticas -->
+          <div class="profile-stats">
+            <div class="stats-grid">
+              <div class="stat-item">
+                <span class="stat-number">
+                  {% if current_user.cursos and current_user.cursos != 'Não informado' %}
+                    {{ current_user.cursos.count(';') + 1 }}
+                  {% else %}
+                    0
+                  {% endif %}
+                </span>
+                <span class="stat-label">Cursos</span>
+              </div>
+
+              <div class="stat-item">
+                <span class="stat-number">0</span>
+                <span class="stat-label">Posts</span>
+              </div>
+
+              <div class="stat-item">
+                <span class="stat-number">{{ current_user.data_criacao.strftime('%Y') if current_user.data_criacao else '2024' }}</span>
+                <span class="stat-label">Membro desde</span>
+              </div>
+
+              <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Ativo</span>
+              </div>
             </div>
-            <div class="ml-3 w-100">
-                <h4 class="mb-0 mt-0">
-                    {{ current_user.username or 'Name Not Found' }}
-                </h4>
-                <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
-                    <div class="d-flex flex-column col-6">
-                        <span class="articles">Cursos</span>
-                        <span class="number1">
-                            {% if current_user.cursos and current_user.cursos != 'Não informado'%}
-                                {{ current_user.cursos.count(';') + 1 }}
-                            {% else %}
-                                0
-                            {% endif %}
-                        </span>
-                    </div>
-                    <div class="d-flex flex-column col-6">
-                        <span class="followers">Posts</span>
-                        <span class="number2">0</span>
-                    </div>
-                </div>
-                <div class="button mt-2 d-flex flex-row align-items-center">
-                    <a class="btn btn-profile w-100" href="{{ url_for('editar_perfil') }}">Editar perfil</a>
-                </div>
-                <div class="mt-3 d-flex gap-2 justify-content-center">
-                    {% for curso in current_user.cursos.split(';') %}
-                        <button class="btn {{curso}}-course">{{ curso }}</button>
-                    {% endfor %}
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Ações do Perfil -->
+      <div class="profile-actions">
+        <a href="{{ url_for('editar_perfil') }}" class="btn-profile-action btn-edit-profile">
+          <i class="fas fa-edit"></i>
+          Editar Perfil
+        </a>
+
+        <button class="btn-profile-action btn-settings" onclick="toggleSettings()">
+          <i class="fas fa-cog"></i>
+          Configurações
+        </button>
+      </div>
+
+      <!-- Seção de Cursos -->
+      <div class="courses-section">
+        <h3 class="courses-title">
+          <i class="fas fa-graduation-cap"></i>
+          Meus Cursos
+        </h3>
+
+        {% if current_user.cursos and current_user.cursos != 'Não informado' %}
+          <div class="courses-grid">
+            {% for curso in current_user.cursos.split(';') %}
+              {% if curso.strip() %}
+                <span class="course-tag {{ curso.strip() }}-course">
+                  <i class="fas fa-certificate me-1"></i>
+                  {{ curso.strip() }}
+                </span>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-courses">
+            <i class="fas fa-book-open"></i>
+            <h4>Nenhum curso cadastrado</h4>
+            <p>Adicione seus cursos no perfil para mostrar suas habilidades!</p>
+            <a href="{{ url_for('editar_perfil') }}" class="btn btn-primary mt-2">
+              <i class="fas fa-plus me-1"></i>Adicionar Cursos
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
     </div>
+  </div>
 </div>
+
+<!-- Modal de Configurações (opcional) -->
+<div id="settingsModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-cog me-2"></i>Configurações
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="list-group list-group-flush">
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="fas fa-bell me-2"></i>Notificações
+          </a>
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="fas fa-shield-alt me-2"></i>Privacidade
+          </a>
+          <a href="#" class="list-group-item list-group-item-action">
+            <i class="fas fa-palette me-2"></i>Tema
+          </a>
+          <a href="{{ url_for('sair') }}" class="list-group-item list-group-item-action text-danger">
+            <i class="fas fa-sign-out-alt me-2"></i>Sair da Conta
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% block form_editar_perfil %}
 {% endblock %}
 
+<!-- JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Animação de contadores
+  const statNumbers = document.querySelectorAll('.stat-number');
+  statNumbers.forEach(stat => {
+    const finalValue = parseInt(stat.textContent) || 0;
+    if (!isNaN(finalValue) && finalValue > 0) {
+      animateCounter(stat, 0, finalValue, 1000);
+    }
+  });
+
+  // Função para animar contadores
+  function animateCounter(element, start, end, duration) {
+    const range = end - start;
+    const startTime = performance.now();
+
+    function updateCounter(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const current = Math.floor(start + (range * progress));
+      element.textContent = current;
+
+      if (progress < 1) {
+        requestAnimationFrame(updateCounter);
+      } else {
+        element.textContent = end;
+      }
+    }
+
+    requestAnimationFrame(updateCounter);
+  }
+
+  // Efeito parallax sutil no header
+  window.addEventListener('scroll', function() {
+    const scrolled = window.pageYOffset;
+    const header = document.querySelector('.profile-header');
+    if (header) {
+      header.style.transform = `translateY(${scrolled * 0.1}px)`;
+    }
+  });
+
+  // Tooltip para avatar status
+  const avatarStatus = document.querySelector('.avatar-status');
+  if (avatarStatus) {
+    avatarStatus.addEventListener('mouseenter', function() {
+      this.style.transform = 'scale(1.2)';
+    });
+
+    avatarStatus.addEventListener('mouseleave', function() {
+      this.style.transform = 'scale(1)';
+    });
+  }
+});
+
+// Função para toggle de configurações
+function toggleSettings() {
+  const modal = new bootstrap.Modal(document.getElementById('settingsModal'));
+  modal.show();
+}
+
+// Efeito de hover nos course tags
+document.querySelectorAll('.course-tag').forEach(tag => {
+  tag.addEventListener('mouseenter', function() {
+    this.style.transform = 'translateY(-2px) scale(1.05)';
+  });
+
+  tag.addEventListener('mouseleave', function() {
+    this.style.transform = 'translateY(0) scale(1)';
+  });
+});
+</script>
 {% endblock %}

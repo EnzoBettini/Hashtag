@@ -1,115 +1,566 @@
 {% extends 'base.html' %}
+
+{% block title %}Início - Comunidade{% endblock %}
+
+{% block head %}
+<style>
+  /* Hero Section */
+  .hero-section {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+    border-radius: var(--border-radius-lg);
+    padding: 3rem 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+    font-weight: 500;
+  }
+
+  /* Posts Container */
+  .posts-container {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  /* Post Card Melhorado */
+  .post-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(168, 213, 227, 0.2);
+  }
+
+  .post-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-color);
+  }
+
+  .post-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .post-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Post Header */
+  .post-header {
+    padding: 1.5rem 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 3px solid var(--secondary-light);
+    transition: var(--transition);
+    object-fit: cover;
+  }
+
+  .author-avatar:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+  }
+
+  .author-info {
+    flex: 1;
+  }
+
+  .author-name {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: var(--transition);
+    display: block;
+  }
+
+  .author-name:hover {
+    color: var(--primary-color);
+    transform: translateX(2px);
+  }
+
+  .post-date {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  /* Post Actions */
+  .post-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(247, 108, 94, 0.1);
+    border: none;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    cursor: pointer;
+  }
+
+  .action-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+  }
+
+  /* Compatibilidade com o JS existente */
+  .icone-editar-post {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: var(--transition);
+  }
+
+  .icone-editar-post:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+  }
+
+  /* Post Content */
+  .post-content {
+    padding: 1.5rem;
+  }
+
+  .post-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .post-body {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 1rem;
+    white-space: pre-wrap; /* Preserva quebras de linha */
+  }
+
+  /* Modal Melhorado */
+  .modal-container-enzo {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 1050;
+    padding: 1rem;
+  }
+
+  .modal-container-enzo.is-open {
+    display: flex;
+    animation: modalFadeIn 0.3s ease;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .modal-enzo {
+    background: var(--bg-card);
+    width: min(95vw, 600px);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    animation: modalSlideIn 0.3s ease;
+    overflow: hidden;
+  }
+
+  @keyframes modalSlideIn {
+    from {
+      transform: translateY(-50px) scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .modal-header {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .modal-title {
+    margin: 0;
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .modal-body {
+    padding: 2rem;
+  }
+
+  /* Form Melhorado */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .form-control {
+    border: 2px solid var(--gray-200);
+    border-radius: var(--border-radius-sm);
+    padding: 0.75rem 1rem;
+    transition: var(--transition);
+    background: var(--bg-card);
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(247, 108, 94, 0.1);
+    outline: none;
+  }
+
+  .form-control:hover {
+    border-color: var(--primary-light);
+  }
+
+  /* Botões do Modal */
+  .modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .btn-modal {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    transition: var(--transition-bounce);
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary-modal {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--text-primary);
+  }
+
+  .btn-primary-modal:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    color: var(--text-light);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary-modal {
+    background: var(--gray-200);
+    color: var(--text-primary);
+  }
+
+  .btn-secondary-modal:hover {
+    background: var(--gray-300);
+    transform: translateY(-2px);
+  }
+
+  .btn-danger-modal {
+    background: linear-gradient(135deg, var(--danger-color), #c53030);
+    color: white;
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  .btn-danger-modal:hover {
+    background: linear-gradient(135deg, #c53030, var(--danger-color));
+    transform: translateY(-2px);
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+  }
+
+  .empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  .empty-state h3 {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+  }
+
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+    }
+
+    .hero-section {
+      padding: 2rem 1rem;
+    }
+
+    .post-header {
+      padding: 1rem 1rem 0;
+    }
+
+    .post-content {
+      padding: 1rem;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block main %}
-  <div class="container">
-    <h1>Comunidade</h1>
-    <h3>Primeiro projeto com Python</h3>
-    <hr>
-    {% for post in posts %}
-
-    {% if current_user.is_authenticated and current_user.email == post.autor.email %}
-  <!-- Modal do post (ID único) -->
-      <div class="modal-container-enzo" id="modal-editar-{{ post.id }}">
-        <div class="modal-enzo">
-          <div class="card-form-colors card-body border-edit-profile">
-            <h4 class="mb-3">Editar Post</h4>
-
-            <form class="d-grid gap-3" method="POST" action="{{ url_for('home') }}">
-              {{ FormEditar.hidden_tag() }}
-
-              <!-- identifica qual post está sendo editado -->
-              <input type="hidden" name="post_id" value="{{ post.id }}">
-
-              <div>
-                {{ FormEditar.titulo.label(class="form-labels mb-1", for='titulo-' ~ post.id) }}
-                {{ FormEditar.titulo(
-                    id='titulo-' ~ post.id,
-                    class="form-control",
-                    placeholder="Digite o titulo do post",
-                    value=post.titulo
-                ) }}
-                {% for erro in FormEditar.titulo.errors %}
-                  <small class="text-danger">{{ erro }}</small>
-                {% endfor %}
-              </div>
-
-              <div>
-                {{ FormEditar.corpo.label(class="form-labels mb-1", for='corpo-' ~ post.id) }}
-                {{ FormEditar.corpo(
-                    id='corpo-' ~ post.id,
-                    class="form-control",
-                    placeholder="Digite o texto do post",
-                    value=post.corpo
-                ) }}
-                {% for erro in FormEditar.corpo.errors %}
-                  <small class="text-danger">{{ erro }}</small>
-                {% endfor %}
-              </div>
-
-              <div class="col-12 mt-3">
-                <div class="row d-flex">
-                  <div class="col-6">
-                    {{ FormEditar.botao_submit_criar_post(class="col-12 btn btn-forms") }}
-                  </div>
-                  <div class="col-6">
-                    <button type="button" class="col-12 btn btn-discard-forms close-modal">Cancelar</button>
-                  </div>
-                </div>
-              </div>
-            </form>
-            <form method="POST"
-                  action="{{ url_for('excluir_post', post_id=post.id) }}"
-                  onsubmit="return confirm('Tem certeza que deseja excluir este post? Esta ação não pode ser desfeita.');">
-              {{ FormEditar.csrf_token }}
-              <button type="submit" class="col-12 btn btn-discard-forms" style="margin-top:10px;">
-                Excluir
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    {% endif %}
-
-
-    <div class="container mt-5 d-flex justify-content-center">
-      <div class="card-profile p-3">
-        <div class="container d-flex flex-column gap-3">
-
-          <div class="row">
-            <div class="col-12 mb-1 d-flex flex-row align-items-center">
-              <img src="{{ url_for('static', filename='profile_pictures/' ~ post.autor.foto_perfil) }}"
-                   class="rounded me-2" width="36">
-              <a class="autor-post" href="{{ url_for('usuarios') }}">{{ post.autor.username }}</a>
-
-              {% if current_user.is_authenticated and current_user.email == post.autor.email %}
-                <!-- Ícone abre o modal deste post -->
-                <a class="fa-solid fa-bars ms-auto icone-editar-post"
-                   data-modal-target="modal-editar-{{ post.id }}"></a>
-              {% endif %}
-            </div>
-
-            <div class="col-12">
-              <span class="titulo-post">{{ post.titulo }}</span>
-            </div>
-
-            <hr class="col-12">
-
-            <div class="col-12">
-              {{ post.corpo }}
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-12 mb-0 text-end">
-              <p class="data-post">{{ post.data_criacao.strftime("%d/%m/%Y %H:%M") }}</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
+<div class="container">
+  <!-- Hero Section -->
+  <div class="hero-section" data-aos="fade-up">
+    <div class="hero-content text-center">
+      <h1 class="hero-title">Comunidade</h1>
+      <p class="hero-subtitle">Conecte-se, compartilhe e descubra conteúdos incríveis</p>
     </div>
-    {% endfor %}
   </div>
 
-  <!-- seu JS -->
-  <script src="{{ url_for('static', filename='Js/editar_post.js') }}"></script>
+  <!-- Posts Section -->
+  <div class="posts-container">
+    {% if posts %}
+      {% for post in posts %}
+        <!-- Modal de Edição -->
+        {% if current_user.is_authenticated and current_user.email == post.autor.email %}
+        <div class="modal-container-enzo" id="modal-editar-{{ post.id }}">
+          <div class="modal-enzo">
+            <div class="modal-header">
+              <h4 class="modal-title">
+                <i class="fas fa-edit me-2"></i>
+                Editar Post
+              </h4>
+            </div>
+            <div class="modal-body">
+              <form method="POST" action="{{ url_for('home') }}">
+                {{ FormEditar.hidden_tag() }}
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+
+                <div class="form-group">
+                  {{ FormEditar.titulo.label(class="form-label", for='titulo-' ~ post.id) }}
+                  {{ FormEditar.titulo(
+                      id='titulo-' ~ post.id,
+                      class="form-control",
+                      placeholder="Digite o título do post",
+                      value=post.titulo
+                  ) }}
+                  {% for erro in FormEditar.titulo.errors %}
+                    <small class="text-danger d-block mt-1">
+                      <i class="fas fa-exclamation-circle me-1"></i>{{ erro }}
+                    </small>
+                  {% endfor %}
+                </div>
+
+                <div class="form-group">
+                  {{ FormEditar.corpo.label(class="form-label", for='corpo-' ~ post.id) }}
+                  {{ FormEditar.corpo(
+                      id='corpo-' ~ post.id,
+                      class="form-control",
+                      placeholder="Digite o conteúdo do post",
+                      rows="4",
+                      value=post.corpo
+                  ) }}
+                  {% for erro in FormEditar.corpo.errors %}
+                    <small class="text-danger d-block mt-1">
+                      <i class="fas fa-exclamation-circle me-1"></i>{{ erro }}
+                    </small>
+                  {% endfor %}
+                </div>
+
+                <div class="modal-actions">
+                  {{ FormEditar.botao_submit_criar_post(class="btn-modal btn-primary-modal") }}
+                  <button type="button" class="btn-modal btn-secondary-modal close-modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                  </button>
+                </div>
+              </form>
+
+              <!-- Botão de Excluir -->
+              <form method="POST"
+                    action="{{ url_for('excluir_post', post_id=post.id) }}"
+                    class="delete-form">
+                {{ FormEditar.csrf_token }}
+                <button type="submit" class="btn-modal btn-danger-modal">
+                  <i class="fas fa-trash me-1"></i>Excluir Post
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Post Card -->
+        <article class="post-card" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+          <!-- Post Header -->
+          <div class="post-header">
+            <img src="{{ url_for('static', filename='profile_pictures/' ~ post.autor.foto_perfil) }}"
+                 alt="Avatar de {{ post.autor.username }}"
+                 class="author-avatar">
+
+            <div class="author-info">
+              <a href="{{ url_for('usuarios') }}" class="author-name">
+                {{ post.autor.username }}
+              </a>
+              <div class="post-date">
+                <i class="fas fa-clock me-1"></i>
+                {{ post.data_criacao.strftime("%d/%m/%Y às %H:%M") }}
+              </div>
+            </div>
+
+            {% if current_user.is_authenticated and current_user.email == post.autor.email %}
+            <div class="post-actions">
+              <!-- Botão compatível com seu JS existente -->
+              <button class="action-btn icone-editar-post"
+                      data-modal-target="modal-editar-{{ post.id }}"
+                      title="Editar post">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Post Content -->
+          <div class="post-content">
+            <h2 class="post-title">{{ post.titulo }}</h2>
+            <div class="post-body">{{ post.corpo }}</div>
+          </div>
+        </article>
+      {% endfor %}
+    {% else %}
+      <!-- Empty State -->
+      <div class="empty-state" data-aos="fade-up">
+        <i class="fas fa-comments"></i>
+        <h3>Nenhum post encontrado</h3>
+        <p>Seja o primeiro a compartilhar algo interessante!</p>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('criar_post') }}" class="btn btn-primary mt-3">
+          <i class="fas fa-plus me-1"></i>Criar Primeiro Post
+        </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script src="{{ url_for('static', filename='Js/editar_post.js') }}"></script>
+
+<script>
+// JavaScript adicional (não conflita com editar_post.js)
+document.addEventListener('DOMContentLoaded', function() {
+  // Auto-resize textarea
+  document.querySelectorAll('textarea').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = this.scrollHeight + 'px';
+    });
+  });
+
+  // Animação de entrada dos posts
+  const posts = document.querySelectorAll('.post-card');
+  posts.forEach((post, index) => {
+    post.style.animationDelay = `${index * 0.1}s`;
+  });
+
+  // Confirmação de exclusão melhorada
+  document.querySelectorAll('.delete-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const result = confirm('⚠️ Tem certeza que deseja excluir este post?\n\nEsta ação não pode ser desfeita.');
+
+      if (result) {
+        // Fechar modal antes de submeter
+        const modal = this.closest('.modal-container-enzo');
+        if (modal && typeof closeModal === 'function') {
+          closeModal(modal);
+        }
+
+        // Submeter o formulário
+        setTimeout(() => {
+          this.submit();
+        }, 300);
+      }
+    });
+  });
+});
+</script>
 {% endblock %}
