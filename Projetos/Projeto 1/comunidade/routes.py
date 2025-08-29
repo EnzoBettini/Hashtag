@@ -42,6 +42,20 @@ def home():
     return render_template('home.html', posts=posts, FormEditar=FormEditar)
 
 
+@app.route("/post/<int:post_id>/excluir", methods=["POST"])
+@login_required
+def excluir_post(post_id):
+    post = Post.query.get_or_404(post_id)
+
+    # só o autor pode excluir
+    if post.autor != current_user:
+        abort(403)
+
+    database.session.delete(post)
+    database.session.commit()
+
+    flash("Post excluído com sucesso.", "alert-success")
+    return redirect(url_for("home"))
 
 
 @app.route("/contato")

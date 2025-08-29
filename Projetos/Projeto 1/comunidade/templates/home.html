@@ -56,7 +56,14 @@
                 </div>
               </div>
             </form>
-
+            <form method="POST"
+                  action="{{ url_for('excluir_post', post_id=post.id) }}"
+                  onsubmit="return confirm('Tem certeza que deseja excluir este post? Esta ação não pode ser desfeita.');">
+              {{ FormEditar.csrf_token }}
+              <button type="submit" class="col-12 btn btn-discard-forms" style="margin-top:10px;">
+                Excluir
+              </button>
+            </form>
           </div>
         </div>
       </div>
